@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+/.idea/.gitignore
+/.idea/adventcode.iml
+/.idea/modules.xml
+/.idea/vcs.xml
