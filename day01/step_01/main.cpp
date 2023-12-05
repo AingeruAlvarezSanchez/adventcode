@@ -2,8 +2,10 @@
 #include <string>
 #include <algorithm>
 
-int main(__attribute__((unused)) int argc, char **argv) {
-    std::ifstream input(argv[1]);
+#define INFILE "day01/step_01/input.txt"
+
+int main() {
+    std::ifstream input(INFILE);
     std::string line;
     int result = 0;
     while (std::getline(input, line, '\n')) {
