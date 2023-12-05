@@ -1,7 +1,5 @@
-#include <iostream>
 #include <fstream>
 #include <algorithm>
-#include <valarray>
 #include <sstream>
 #include <string>
 
