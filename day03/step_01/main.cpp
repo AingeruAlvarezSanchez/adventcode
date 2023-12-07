@@ -7,10 +7,11 @@
 
 bool isValidPart(const std::vector<std::string> &schema,
                  const std::vector<std::string>::iterator &schemaIt,
-                 std::string::const_iterator currNum,
-                 long long numEnd) {
+                 std::string::iterator currNum,
+                 long long numEnd,
+                 long long numStartPos) {
   if (schemaIt != schema.begin()) {
-    auto symbolPos = std::find_if((schemaIt - 1)->begin() + (currNum - schemaIt->begin() - 1),
+    auto symbolPos = std::find_if((schemaIt - 1)->begin() + numStartPos - 1,
                                   (schemaIt - 1)->begin() + numEnd + 1,
                                   [](char c) { return ispunct(c) && c != '.'; });
     if (symbolPos != (schemaIt - 1)->begin() + numEnd + 1) {
@@ -18,15 +19,14 @@ bool isValidPart(const std::vector<std::string> &schema,
     }
   }
   if (schemaIt + 1 != schema.end()) {
-    auto symbolPos = std::find_if((schemaIt + 1)->begin() + (currNum - schemaIt->begin() - 1),
+    auto symbolPos = std::find_if((schemaIt + 1)->begin() + numStartPos - 1,
                                   (schemaIt + 1)->begin() + numEnd + 1,
                                   [](char c) { return ispunct(c) && c != '.'; });
     if (symbolPos != (schemaIt + 1)->begin() + numEnd + 1) {
       return true;
     }
   }
-  if (currNum - 1 - schemaIt->begin() >= 0 && ispunct(schemaIt->at(currNum - 1 - schemaIt->begin()))
-      && schemaIt->at(currNum - 1 - schemaIt->begin()) != '.'
+  if (numStartPos - 1 >= 0 && ispunct(schemaIt->at(numStartPos - 1)) && schemaIt->at(numStartPos - 1) != '.'
       || numEnd < schemaIt->size() && (ispunct(schemaIt->at(numEnd)) && schemaIt->at(numEnd) != '.')) {
     return true;
   }
@@ -43,13 +43,14 @@ int main() {
   }
   for (auto schemaIt = schema.begin(); schemaIt != schema.end(); schemaIt++) {
     long long numEnd = 0;
-    std::string::const_iterator currNum;
+    std::string::iterator currNum;
 
     while ((currNum = std::find_if(schemaIt->begin() + numEnd, schemaIt->end(), isdigit)) != schemaIt->end()) {
-      numEnd = std::find_if_not(schemaIt->begin() + (currNum - schemaIt->begin()), schemaIt->end(), isdigit)
-          - schemaIt->begin();
-      if (isValidPart(schema, schemaIt, currNum, numEnd)) {
-        result += std::stoi(schemaIt->substr((currNum - schemaIt->begin()), numEnd - (currNum - schemaIt->begin())));
+      numEnd = std::find_if_not(currNum, schemaIt->end(), isdigit) - schemaIt->begin();
+      long long numStartPos = currNum - schemaIt->begin();
+
+      if (isValidPart(schema, schemaIt, currNum, numEnd, numStartPos)) {
+        result += std::stoi(schemaIt->substr(numStartPos, numEnd - numStartPos));
       }
     }
   }
